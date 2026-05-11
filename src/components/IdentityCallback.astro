@@ -1,0 +1,200 @@
+---
+// Handles Netlify Identity auth callbacks (invite, recovery, confirmation) on any page.
+// Netlify sends invite/recovery links to the site root with a hash token, so the widget
+// must be present on all pages, not just /admin/.
+---
+
+<div id="id-modal" role="dialog" aria-modal="true" aria-labelledby="id-modal-title" hidden>
+  <div class="id-backdrop" aria-hidden="true"></div>
+  <div class="id-panel">
+    <p class="eyebrow">Paper &amp; Petals Admin</p>
+    <h2 id="id-modal-title" class="id-title"></h2>
+    <p id="id-desc" class="id-desc"></p>
+    <form id="id-form" novalidate>
+      <div class="id-field">
+        <label for="id-pw">Password</label>
+        <input id="id-pw" type="password" autocomplete="new-password" required minlength="8" />
+      </div>
+      <div class="id-field">
+        <label for="id-pw2">Confirm password</label>
+        <input id="id-pw2" type="password" autocomplete="new-password" required minlength="8" />
+      </div>
+      <p id="id-error" class="id-error" hidden></p>
+      <button id="id-submit" type="submit" class="btn id-btn">Set password</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  import { handleAuthCallback, acceptInvite, updateUser } from '@netlify/identity';
+
+  async function initIdentityCallback() {
+    let result;
+    try {
+      result = await handleAuthCallback();
+    } catch {
+      return;
+    }
+    if (!result) return;
+
+    const modal = document.getElementById('id-modal') as HTMLElement;
+    const titleEl = document.getElementById('id-modal-title') as HTMLElement;
+    const descEl = document.getElementById('id-desc') as HTMLElement;
+    const form = document.getElementById('id-form') as HTMLFormElement;
+    const errorEl = document.getElementById('id-error') as HTMLElement;
+    const submitBtn = document.getElementById('id-submit') as HTMLButtonElement;
+
+    function showError(msg: string) {
+      errorEl.textContent = msg;
+      errorEl.hidden = false;
+    }
+
+    function setLoading(loading: boolean, label: string) {
+      submitBtn.disabled = loading;
+      submitBtn.textContent = loading ? label + '…' : label;
+    }
+
+    if (result.type === 'invite') {
+      titleEl.textContent = 'Set your password';
+      descEl.textContent = 'Create a password to complete your account setup.';
+      modal.hidden = false;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.hidden = true;
+        const pw = (document.getElementById('id-pw') as HTMLInputElement).value;
+        const pw2 = (document.getElementById('id-pw2') as HTMLInputElement).value;
+        if (pw !== pw2) { showError('Passwords do not match.'); return; }
+        if (pw.length < 8) { showError('Password must be at least 8 characters.'); return; }
+        setLoading(true, 'Setting password');
+        try {
+          await acceptInvite(result.token, pw);
+          window.location.href = '/admin/';
+        } catch (err: any) {
+          showError(err?.message ?? 'Something went wrong. Please try again.');
+          setLoading(false, 'Set password');
+        }
+      });
+
+    } else if (result.type === 'recovery') {
+      titleEl.textContent = 'Reset your password';
+      descEl.textContent = 'Enter a new password for your account.';
+      submitBtn.textContent = 'Reset password';
+      modal.hidden = false;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.hidden = true;
+        const pw = (document.getElementById('id-pw') as HTMLInputElement).value;
+        const pw2 = (document.getElementById('id-pw2') as HTMLInputElement).value;
+        if (pw !== pw2) { showError('Passwords do not match.'); return; }
+        if (pw.length < 8) { showError('Password must be at least 8 characters.'); return; }
+        setLoading(true, 'Resetting password');
+        try {
+          await updateUser({ password: pw });
+          window.location.href = '/admin/';
+        } catch (err: any) {
+          showError(err?.message ?? 'Something went wrong. Please try again.');
+          setLoading(false, 'Reset password');
+        }
+      });
+
+    } else if (result.type === 'confirmation' || result.type === 'oauth' || result.type === 'email_change') {
+      window.location.href = '/admin/';
+    }
+  }
+
+  initIdentityCallback();
+</script>
+
+<style>
+  #id-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #id-modal[hidden] { display: none; }
+
+  .id-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(43, 37, 32, 0.6);
+    backdrop-filter: blur(2px);
+  }
+
+  .id-panel {
+    position: relative;
+    background: var(--bg);
+    padding: var(--s-8) var(--s-7);
+    max-width: 420px;
+    width: calc(100% - var(--s-7));
+    border-radius: 2px;
+    box-shadow: 0 24px 64px rgba(43, 37, 32, 0.2);
+  }
+
+  .id-title {
+    margin: var(--s-2) 0 var(--s-3);
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+  }
+
+  .id-desc {
+    color: var(--body);
+    font-size: 0.92rem;
+    margin-bottom: var(--s-6);
+    max-width: none;
+  }
+
+  .id-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    margin-bottom: var(--s-4);
+  }
+
+  .id-field label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--heading);
+    font-weight: 500;
+  }
+
+  .id-field input {
+    width: 100%;
+    padding: var(--s-3) var(--s-4);
+    border: 1px solid rgba(43, 37, 32, 0.2);
+    border-radius: 2px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--heading);
+    background: var(--bg);
+    transition: border-color var(--duration-fast) var(--ease-out);
+    outline: none;
+  }
+
+  .id-field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .id-error {
+    color: #c0392b;
+    font-size: 0.875rem;
+    margin-bottom: var(--s-4);
+    max-width: none;
+  }
+
+  .id-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: var(--s-2);
+  }
+
+  .id-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+</style>

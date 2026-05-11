@@ -6,6 +6,7 @@ import Seo from '~/components/Seo.astro';
 import JsonLd from '~/components/JsonLd.astro';
 import { localBusiness, website } from '~/lib/jsonld';
 import { getEntry } from 'astro:content';
+import IdentityCallback from '~/components/IdentityCallback.astro';
 
 export interface Props {
   pageTitle: string;
@@ -45,5 +46,6 @@ const globalLd = [localBusiness(settings, baseUrl), website(settings.siteTitle, 
       <slot />
     </main>
     <Footer />
+    <IdentityCallback />
   </body>
 </html>
