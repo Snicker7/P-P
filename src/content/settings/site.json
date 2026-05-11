@@ -1,12 +1,12 @@
 {
-  "siteTitle": "Paper & Petals Floral",
-  "seoDescription": "Elevated, timeless, romantic floral design for weddings and events. Florals are more than décor — they set the tone for a whole space.",
-  "inquiryEmail": "paperandpetalsllc@gmail.com",
-  "inquiryPhone": "435-340-0117",
   "serviceArea": "Available for weddings & events",
-  "instagram": "paperandpetalsfloral",
-  "pinterest": "paperandpetalsfloral",
-  "tiktok": "paperandpetalsfloral",
+  "defaultOgImage": "",
   "bookingBanner": "Now booking 2026 weddings & events",
-  "defaultOgImage": "/og-default.png"
+  "inquiryPhone": "435-340-0117",
+  "siteTitle": "Paper & Petals Floral",
+  "instagram": "paperandpetalsfloral",
+  "inquiryEmail": "paperandpetalsllc@gmail.com",
+  "tiktok": "paperandpetalsfloral",
+  "pinterest": "paperandpetalsfloral",
+  "seoDescription": "Elevated, timeless, romantic floral design for weddings and events. Florals are more than décor — they set the tone for a whole space."
 }
