@@ -196,6 +196,12 @@ const posts = (await getCollection('journal', e => e.data.published))
     position: relative; z-index: 1; max-width: 820px;
     padding: var(--s-9) var(--s-5); color: #fff;
   }
+  @media (max-width: 720px) {
+    .hero__content { padding-inline: 40px; }
+  }
+  @media (max-width: 380px) {
+    .hero__content { padding-inline: 28px; }
+  }
   .hero .eyebrow { color: #fff; }
   .hero__h1 {
     font-size: clamp(1.6rem, 4.8vw, 3rem);
