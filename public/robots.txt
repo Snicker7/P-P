@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /inquire/thanks
+
+Sitemap: https://paperandpetalsfloral.com/sitemap-index.xml

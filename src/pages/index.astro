@@ -1,0 +1,286 @@
+---
+import Base from '~/layouts/Base.astro';
+import PortfolioCard from '~/components/PortfolioCard.astro';
+import JournalCard from '~/components/JournalCard.astro';
+import { getEntry, getCollection } from 'astro:content';
+const home = await getEntry('pages', 'home');
+const featured = (await getCollection('portfolio', e => e.data.published && e.data.featured))
+  .sort((a, b) => b.data.eventDate.getTime() - a.data.eventDate.getTime())
+  .slice(0, 4);
+const posts = (await getCollection('journal', e => e.data.published))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+---
+<Base
+  pageTitle={home.data.title}
+  pageDescription={home.data.seoDescription}
+  seoTitleOverride={home.data.seoTitle}
+>
+  <section class="hero">
+    <img class="hero__image" src="/images/home/hero.jpg" alt="Paper & Petals floral installation" />
+    <div class="hero__overlay"></div>
+    <div class="container hero__content">
+      <p class="eyebrow eyebrow--light">{home.data.heroEyebrow}</p>
+      <h1 class="hero__h1">{home.data.heroHeadline}</h1>
+      <p class="hero__sub">{home.data.heroSubhead}</p>
+      <div class="hero__ctas">
+        <a href="/inquire" class="btn">{home.data.heroCta}</a>
+        <a href="/portfolio" class="hero__secondary">{home.data.heroSecondaryCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="promise">
+      <div>
+        <p class="eyebrow">About Paper &amp; Petals</p>
+        <h2>{home.data.aboutHeadline}</h2>
+      </div>
+      <div class="promise__body">
+        <p>{home.data.aboutBody}</p>
+        <p>Each arrangement is approached as art: composed with intention, balanced in color, and rooted in story. Whether the event is intimate or grand, the work is always quietly confident — designed to feel inevitable, never staged.</p>
+        <a href="/about" class="link">{home.data.aboutCta} →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="owner">
+    <div class="container owner__inner">
+      <div class="owner__photo">
+        <img src="/images/home/owner-taleah.jpg" alt="TaLeah, owner and floral designer at Paper & Petals" loading="lazy" />
+      </div>
+      <div class="owner__text">
+        <p class="eyebrow">Meet the owner</p>
+        <h2>{home.data.ownerHeadline}</h2>
+        <p class="owner__body">{home.data.ownerBody}</p>
+        <p><a href="/about" class="btn btn--ghost">More about TaLeah</a></p>
+      </div>
+    </div>
+  </section>
+
+  {featured.length > 0 ? (
+    <section class="featured-strip">
+      <div class="container">
+        <p class="eyebrow eyebrow--light">Selected Work</p>
+        <h2 class="featured-strip__h">{home.data.portfolioHeadline}</h2>
+        <div class="pf-grid">
+          {featured.map(e => (
+            <PortfolioCard
+              href={`/portfolio/${e.slug}`}
+              eventTitle={e.data.eventTitle}
+              eventDate={e.data.eventDate}
+              venue={e.data.venue}
+              location={e.data.location}
+              heroImage={e.data.heroImage}
+              heroImageAlt={e.data.heroImageAlt}
+            />
+          ))}
+        </div>
+        <p class="center"><a href="/portfolio" class="btn btn--ghost btn--ghost-light">See full portfolio</a></p>
+      </div>
+    </section>
+  ) : (
+    <section class="showcase">
+      <div class="container">
+        <p class="eyebrow">Selected Work</p>
+        <h2>{home.data.portfolioHeadline}</h2>
+        <div class="glimpse">
+          <a href="/portfolio" class="glimpse__item glimpse__item--tall">
+            <img src="/images/home/glimpse-1.jpg" alt="Bridal bouquet by Paper & Petals" loading="lazy" />
+          </a>
+          <a href="/portfolio" class="glimpse__item">
+            <img src="/images/home/glimpse-2.jpg" alt="Wedding floral arrangement by Paper & Petals" loading="lazy" />
+          </a>
+          <a href="/portfolio" class="glimpse__item">
+            <img src="/images/home/glimpse-3.jpg" alt="Event florals by Paper & Petals" loading="lazy" />
+          </a>
+        </div>
+        <p class="center"><a href="/portfolio" class="btn btn--ghost">See full portfolio</a></p>
+      </div>
+    </section>
+  )}
+
+  <section class="testimonial">
+    <div class="container testimonial__inner">
+      <p class="eyebrow">Kind Words</p>
+      <blockquote class="testimonial__quote">
+        <p>“{home.data.testimonialQuote}”</p>
+        <footer>— {home.data.testimonialAuthor}</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="featured-in">
+    <div class="container featured-in__inner">
+      <p class="eyebrow eyebrow--light center">Featured In &amp; Trusted By</p>
+      <div class="featured-in__row">
+        <a href="https://utahvalleybride.com/paper-petals/" target="_blank" rel="noopener" class="featured-in__link">
+          <img src="/images/partners/utah-valley-bride.png" alt="Utah Valley Bride 2026 Preferred Vendor" loading="lazy" class="featured-in__badge" />
+        </a>
+        <a href="https://theranchesvenue.com/" target="_blank" rel="noopener" class="featured-in__link">
+          <img src="/images/partners/the-ranches-venue.webp" alt="The Ranches Venue" loading="lazy" class="featured-in__venue" />
+        </a>
+        <a href="https://www.strollmag.com/locations/river-bottoms-ut/" target="_blank" rel="noopener" class="featured-in__link" aria-label="Featured in Stroll Magazine, River Bottoms UT">
+          <img src="/images/partners/stroll-mag.svg" alt="Stroll Magazine" loading="lazy" class="featured-in__stroll" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="container section">
+      <p class="eyebrow">From the Journal</p>
+      <h2>Recent words</h2>
+      <div class="journal-grid">
+        {posts.map(p => (
+          <JournalCard
+            href={`/journal/${p.slug}`}
+            title={p.data.title} date={p.data.date}
+            excerpt={p.data.excerpt}
+            heroImage={typeof p.data.heroImage === 'string' ? p.data.heroImage : p.data.heroImage.src}
+            heroImageAlt={p.data.heroImageAlt}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="cta-block">
+    <div class="container cta-block__inner">
+      <h2 class="cta-block__h">{home.data.inquiryBlockHeadline}</h2>
+      <a href="/inquire" class="btn">{home.data.inquiryBlockButton}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 78vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--heading);
+  }
+  .hero__image {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+  }
+  .hero__overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(43,37,32,0.35) 0%, rgba(43,37,32,0.65) 100%);
+  }
+  .hero__content {
+    position: relative; z-index: 1; max-width: 820px;
+    padding: var(--s-9) var(--s-5); color: #fff;
+  }
+  .hero .eyebrow { color: #fff; }
+  .hero__h1 {
+    font-size: clamp(1.6rem, 4.8vw, 3rem);
+    margin-bottom: var(--s-5);
+    color: #fff;
+    white-space: nowrap;
+  }
+  .hero__sub { font-size: 1.1rem; max-width: 32rem; color: rgba(255,255,255,0.9); }
+  .hero__ctas { display: flex; gap: var(--s-5); align-items: center; flex-wrap: wrap; margin-top: var(--s-5); }
+  .hero__secondary { color: #fff; border-bottom: 1px solid #fff; padding-bottom: 2px; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none; }
+  .hero__secondary:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .promise { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-7); }
+  .promise__body p { color: var(--body); }
+  .promise .link { color: var(--heading); text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.18em; }
+  @media (max-width: 720px) { .promise { grid-template-columns: 1fr; } }
+
+  .owner { background: var(--bg-soft); padding: var(--s-9) 0; }
+  .owner__inner {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) 1.4fr;
+    gap: var(--s-8);
+    align-items: center;
+  }
+  .owner__photo { aspect-ratio: 4 / 5; overflow: hidden; }
+  .owner__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .owner__text h2 { margin-top: var(--s-3); }
+  .owner__body { font-size: 1.1rem; color: var(--body); margin: var(--s-4) 0 var(--s-6); max-width: 36rem; }
+  @media (max-width: 720px) {
+    .owner__inner { grid-template-columns: 1fr; gap: var(--s-6); text-align: center; }
+    .owner__body { margin-left: auto; margin-right: auto; }
+  }
+
+  .center { text-align: center; margin-top: var(--s-6); }
+  .link { color: var(--heading); border-bottom: 1px solid var(--heading); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; }
+
+  .showcase { padding: var(--s-9) 0; }
+  .glimpse {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: var(--s-4);
+    margin: var(--s-6) 0;
+  }
+  .glimpse__item {
+    position: relative; overflow: hidden;
+    display: block;
+    aspect-ratio: 4 / 5;
+  }
+  .glimpse__item--tall { aspect-ratio: 4 / 5; }
+  .glimpse__item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform var(--duration) var(--ease-out);
+  }
+  .glimpse__item:hover img { transform: scale(1.04); }
+  @media (max-width: 720px) {
+    .glimpse { grid-template-columns: 1fr; }
+  }
+
+  .testimonial { padding: var(--s-9) 0; background: var(--bg); }
+  .testimonial__inner { max-width: 760px; margin: 0 auto; text-align: center; }
+  .testimonial__quote { margin: var(--s-5) 0 0; padding: 0; }
+  .testimonial__quote p { font-family: var(--font-display, var(--font-body)); font-size: clamp(1.15rem, 2.2vw, 1.5rem); line-height: 1.55; color: var(--heading); font-style: italic; }
+  .testimonial__quote footer { margin-top: var(--s-4); font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--body); }
+
+  .featured-in {
+    background: #d2babd; color: var(--heading);
+    padding: var(--s-8) 0;
+  }
+  .featured-in .eyebrow { color: var(--heading); }
+  .featured-in__inner { text-align: center; }
+  .featured-in__row {
+    display: flex; gap: var(--s-9); justify-content: center; align-items: center;
+    flex-wrap: wrap; margin-top: var(--s-5);
+  }
+  .featured-in__link { display: inline-flex; align-items: center; }
+  .featured-in__badge { max-height: 140px; width: auto; opacity: 0.95;
+    filter: invert(1) brightness(0.25);
+  }
+  .featured-in__link:hover .featured-in__badge { opacity: 1; }
+  .featured-in__venue {
+    max-height: 96px; width: auto;
+    opacity: 0.95;
+  }
+  .featured-in__link:hover .featured-in__venue { opacity: 1; }
+  .featured-in__stroll {
+    max-height: 96px; width: auto; opacity: 0.95;
+  }
+  .featured-in__link:hover .featured-in__stroll { opacity: 1; }
+  @media (max-width: 720px) {
+    .featured-in__row { gap: var(--s-6); }
+    .featured-in__badge { max-height: 110px; }
+    .featured-in__venue, .featured-in__stroll { max-height: 72px; }
+  }
+
+  .featured-strip { background: var(--heading); color: var(--bg); padding: var(--s-9) 0; }
+  .featured-strip__h { color: var(--bg); }
+  .eyebrow--light { color: var(--accent); }
+  .pf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-4); margin: var(--s-5) 0; }
+  @media (max-width: 900px) { .pf-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .pf-grid { grid-template-columns: 1fr; } }
+  .btn--ghost-light { color: var(--bg); border-color: var(--bg); background: transparent; }
+  .btn--ghost-light:hover { background: var(--bg); color: var(--heading); }
+
+  .journal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }
+  @media (max-width: 900px) { .journal-grid { grid-template-columns: 1fr; } }
+
+  .cta-block { background: var(--heading); color: var(--bg); padding: var(--s-9) 0; }
+  .cta-block__inner { display: flex; flex-direction: column; align-items: center; gap: var(--s-5); text-align: center; }
+  .cta-block__h { color: var(--bg); }
+</style>

@@ -1,0 +1,67 @@
+@import './tokens.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 300;
+  background: var(--bg);
+  color: var(--body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img, video { max-width: 100%; height: auto; display: block; }
+a { color: var(--heading); text-decoration: underline; text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--heading);
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+h1 { font-size: clamp(2.4rem, 5.5vw, 3.6rem); margin: 0 0 var(--s-5); }
+h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); margin: 0 0 var(--s-4); }
+h3 { font-size: clamp(1.25rem, 2vw, 1.5rem); margin: 0 0 var(--s-3); }
+p { margin: 0 0 var(--s-4); max-width: var(--content-w); }
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--s-3);
+  font-weight: 500;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: var(--s-4) var(--s-5);
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.btn:hover { background: var(--heading); color: var(--bg); }
+.btn--ghost { background: transparent; color: var(--heading); border: 1px solid var(--heading); }
+.btn--ghost:hover { background: var(--heading); color: var(--bg); }
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--s-5); }
+.section { padding: var(--s-9) 0; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+@media (max-width: 720px) {
+  .container { padding: 0 var(--s-6); }
+  .section { padding: var(--s-7) 0; }
+}

@@ -1,0 +1,29 @@
+---
+import Base from '~/layouts/Base.astro';
+import JournalCard from '~/components/JournalCard.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('journal', e => e.data.published))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<Base pageTitle="Journal" pageDescription="Notes on floral design, seasonal palettes, and the details that shape an event.">
+  <section class="container section">
+    <p class="eyebrow">Journal</p>
+    <h1>Notes from the studio</h1>
+    <div class="journal-grid">
+      {posts.map(p => (
+        <JournalCard
+          href={`/journal/${p.slug}`}
+          title={p.data.title} date={p.data.date}
+          excerpt={p.data.excerpt}
+          heroImage={typeof p.data.heroImage === 'string' ? p.data.heroImage : p.data.heroImage.src}
+          heroImageAlt={p.data.heroImageAlt}
+        />
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .journal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); margin-top: var(--s-5); }
+  @media (max-width: 900px) { .journal-grid { grid-template-columns: 1fr; } }
+</style>

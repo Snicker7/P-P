@@ -1,0 +1,105 @@
+# For local development only — uncomment locally, never commit uncommented.
+# local_backend: true
+
+backend:
+  name: git-gateway
+  branch: main
+
+publish_mode: editorial_workflow
+media_folder: "public/images"
+public_folder: "/images"
+
+logo_url: /apple-touch-icon.png
+site_url: https://paperandpetalsfloral.com
+display_url: https://paperandpetalsfloral.com
+
+collections:
+  - name: settings
+    label: Site Settings
+    files:
+      - name: site
+        label: Site Settings
+        file: src/content/settings/site.json
+        format: json
+        fields:
+          - { label: "Site Title", name: siteTitle, widget: string }
+          - { label: "SEO Description", name: seoDescription, widget: text, hint: "Default meta description (~160 chars)" }
+          - { label: "Inquiry Email", name: inquiryEmail, widget: string }
+          - { label: "Service Area", name: serviceArea, widget: string }
+          - { label: "Instagram handle (no @)", name: instagram, widget: string }
+          - { label: "TikTok handle (no @)", name: tiktok, widget: string }
+          - { label: "Booking-status banner", name: bookingBanner, widget: string, hint: "e.g. 'Now booking 2026 weddings'" }
+          - { label: "Default OG image", name: defaultOgImage, widget: image, default: "/og-default.png", required: false }
+
+  - name: pages
+    label: Pages
+    folder: src/content/pages
+    extension: md
+    format: frontmatter
+    create: false
+    slug: "{{slug}}"
+    identifier_field: title
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: "SEO Title (override)", name: seoTitle, widget: string, required: false }
+      - { label: "SEO Description (override)", name: seoDescription, widget: text, required: false }
+      - { label: Body, name: body, widget: markdown, required: false }
+
+  - name: portfolio
+    label: Portfolio
+    folder: src/content/portfolio
+    extension: mdx
+    format: frontmatter
+    create: true
+    slug: "{{slug}}"
+    identifier_field: eventTitle
+    fields:
+      - { label: "Event title", name: eventTitle, widget: string, hint: "e.g. 'Emma & Jack' or 'Spring Garden Soirée'" }
+      - { label: "Event type", name: eventType, widget: select, options: ["Wedding", "Event", "Editorial", "Installation"], default: "Wedding" }
+      - { label: "Event date", name: eventDate, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
+      - { label: Venue, name: venue, widget: string, required: false }
+      - { label: Location, name: location, widget: string, required: false, hint: "City, State" }
+      - { label: "Hero image", name: heroImage, widget: image }
+      - { label: "Hero image alt text (REQUIRED for SEO)", name: heroImageAlt, widget: string }
+      - label: Gallery
+        name: gallery
+        widget: list
+        required: false
+        fields:
+          - { label: Image, name: image, widget: image }
+          - { label: "Alt text (required)", name: alt, widget: string }
+          - { label: Caption, name: caption, widget: string, required: false }
+      - label: Credits
+        name: credits
+        widget: list
+        required: false
+        hint: "Photographer, planner, venue, etc."
+        fields:
+          - { label: Role, name: role, widget: string }
+          - { label: Name, name: name, widget: string }
+          - { label: "Instagram URL", name: instagram, widget: string, required: false }
+      - { label: "Featured on home?", name: featured, widget: boolean, default: false }
+      - { label: "Published?", name: published, widget: boolean, default: false }
+      - { label: "SEO Title (override)", name: seoTitle, widget: string, required: false }
+      - { label: "SEO Description (override)", name: seoDescription, widget: text, required: false }
+      - { label: Story, name: body, widget: markdown, required: false }
+
+  - name: journal
+    label: Journal
+    folder: src/content/journal
+    extension: mdx
+    format: frontmatter
+    create: true
+    slug: "{{slug}}"
+    identifier_field: title
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: "Publish date", name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Hero image", name: heroImage, widget: image }
+      - { label: "Hero image alt text (REQUIRED)", name: heroImageAlt, widget: string }
+      - { label: "Excerpt (~200 chars)", name: excerpt, widget: text }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: "Published?", name: published, widget: boolean, default: true }
+      - { label: "SEO Title (override)", name: seoTitle, widget: string, required: false }
+      - { label: "SEO Description (override)", name: seoDescription, widget: text, required: false }
+      - { label: Body, name: body, widget: markdown }

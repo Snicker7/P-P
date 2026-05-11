@@ -1,0 +1,39 @@
+# build output
+dist/
+.astro/
+.netlify/
+
+# dependencies
+node_modules/
+
+# brainstorming workspace (kept locally; not committed)
+.superpowers/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env
+.env
+.env.local
+.env.production
+
+# secrets / tokens (never commit credentials)
+git.txt
+*.token
+*.pat
+
+# editor
+.vscode/
+.idea/
+.DS_Store
+
+# test artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+
+# lighthouse
+.lighthouseci/

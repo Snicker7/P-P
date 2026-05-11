@@ -1,0 +1,84 @@
+---
+import Base from '~/layouts/Base.astro';
+import PortfolioCard from '~/components/PortfolioCard.astro';
+import { getCollection, getEntry } from 'astro:content';
+const entries = (await getCollection('portfolio', e => e.data.published))
+  .sort((a, b) => b.data.eventDate.getTime() - a.data.eventDate.getTime());
+const settings = (await getEntry('settings', 'site')).data;
+
+const galleryImages = [
+  'p1.jpg', 'p2.jpg', 'p3.jpg', 'p4.jpg', 'p5.jpg', 'p6.jpg', 'p7.jpg',
+  'p8.jpg', 'p9.jpg', 'p10.jpg', 'p11.jpg', 'p12.jpg', 'p13.jpg',
+];
+---
+<Base pageTitle="Portfolio" pageDescription="Selected florals for weddings and events.">
+  <section class="container section">
+    <p class="eyebrow">Portfolio</p>
+    <h1>A glimpse at our work</h1>
+    <p class="lead">A selection of florals from recent weddings, events, and installations.</p>
+  </section>
+
+  {entries.length > 0 ? (
+    <section class="container">
+      <div class="pf-grid">
+        {entries.map(e => (
+          <PortfolioCard
+            href={`/portfolio/${e.slug}`}
+            eventTitle={e.data.eventTitle}
+            eventDate={e.data.eventDate}
+            venue={e.data.venue}
+            location={e.data.location}
+            heroImage={e.data.heroImage}
+            heroImageAlt={e.data.heroImageAlt}
+          />
+        ))}
+      </div>
+    </section>
+  ) : (
+    <section class="container">
+      <div class="masonry">
+        {galleryImages.map((src, i) => (
+          <figure class="masonry__item">
+            <img src={`/images/portfolio-gallery/${src}`} alt={`Floral design by Paper & Petals — ${i + 1}`} loading="lazy" />
+          </figure>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="container section pf-cta">
+    <h2>{settings.bookingBanner}</h2>
+    <p><a href="/inquire" class="btn">Inquire now</a></p>
+  </section>
+</Base>
+
+<style>
+  .lead { font-size: 1.1rem; max-width: 640px; margin-bottom: var(--s-6); color: var(--body); }
+
+  .pf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); margin-top: var(--s-5); }
+  @media (max-width: 900px) { .pf-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .pf-grid { grid-template-columns: 1fr; } }
+
+  .masonry {
+    column-count: 3;
+    column-gap: var(--s-4);
+    margin-top: var(--s-5);
+  }
+  .masonry__item {
+    margin: 0 0 var(--s-4);
+    break-inside: avoid;
+    overflow: hidden;
+  }
+  .masonry__item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform var(--duration) var(--ease-out);
+  }
+  .masonry__item:hover img { transform: scale(1.03); }
+  @media (max-width: 900px) { .masonry { column-count: 2; } }
+  @media (max-width: 480px) { .masonry { column-count: 1; } }
+
+  .pf-cta { text-align: center; margin-top: var(--s-9); }
+  .pf-cta h2 { margin-bottom: var(--s-5); }
+</style>

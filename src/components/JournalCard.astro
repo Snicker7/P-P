@@ -1,0 +1,30 @@
+---
+import { formatDate } from '~/lib/format';
+export interface Props {
+  href: string;
+  title: string;
+  date: Date;
+  excerpt: string;
+  heroImage: string;
+  heroImageAlt: string;
+}
+const { href, title, date, excerpt, heroImage, heroImageAlt } = Astro.props;
+---
+<article class="jcard">
+  <a href={href}>
+    <img class="jcard__img" src={heroImage} alt={heroImageAlt} loading="lazy" />
+    <p class="jcard__date">{formatDate(date)}</p>
+    <h3 class="jcard__title">{title}</h3>
+    <p class="jcard__excerpt">{excerpt}</p>
+    <span class="jcard__more">Read</span>
+  </a>
+</article>
+
+<style>
+  .jcard a { text-decoration: none; color: var(--body); display: block; }
+  .jcard__img { aspect-ratio: 3/2; width: 100%; object-fit: cover; }
+  .jcard__date { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin: var(--s-3) 0 var(--s-1); }
+  .jcard__title { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 var(--s-2); text-transform: uppercase; }
+  .jcard__excerpt { font-size: 0.9rem; color: var(--body); margin: 0 0 var(--s-3); }
+  .jcard__more { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--heading); border-bottom: 1px solid var(--heading); }
+</style>

@@ -1,0 +1,19 @@
+---
+import Base from '~/layouts/Base.astro';
+import { getEntry } from 'astro:content';
+const page = await getEntry('pages', 'inquire');
+---
+<Base pageTitle="Thank you" pageDescription="Your inquiry is in.">
+  <section class="container section thanks">
+    <p class="eyebrow">Inquiry received</p>
+    <h1>Thank you</h1>
+    <p>{page.data.successMessage}</p>
+    <a href="/" class="link">Back home</a>
+  </section>
+</Base>
+
+<style>
+  .thanks { text-align: center; max-width: 640px; }
+  .thanks p { margin: 0 auto var(--s-5); }
+  .link { color: var(--heading); text-decoration: none; border-bottom: 1px solid var(--heading); }
+</style>

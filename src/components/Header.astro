@@ -1,0 +1,66 @@
+---
+import MobileMenu from './MobileMenu.astro';
+import { getEntry } from 'astro:content';
+const settings = (await getEntry('settings', 'site')).data;
+---
+<header class="header">
+  <div class="container header__inner">
+    <a href="/" class="header__logo" aria-label={`${settings.siteTitle} — home`}>
+      <img src="/images/logo/paper-and-petals-logo.png" alt="" class="header__mark" width="74" height="74" />
+      <span class="header__wordmark">Paper &amp; Petals</span>
+    </a>
+    <nav class="header__nav" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/inquire">Inquire</a></li>
+        <li><a href="/portfolio">Portfolio</a></li>
+        <li><a href="/journal">Journal</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+    <MobileMenu />
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in oklab, var(--bg) 85%, transparent);
+    backdrop-filter: blur(10px);
+    transition: background var(--duration) var(--ease-out);
+  }
+  .header__inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s-4) var(--s-5); gap: var(--s-5);
+  }
+  .header__logo { text-decoration: none; display: inline-flex; align-items: center; gap: var(--s-3); color: var(--heading); }
+  .header__mark { height: 64px; width: auto; display: block; }
+  .header__wordmark {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    letter-spacing: 0.04em;
+    color: var(--heading);
+    line-height: 1;
+  }
+  @media (max-width: 720px) {
+    .header__mark { height: 52px; }
+    .header__wordmark { font-size: 1.2rem; }
+  }
+  @media (max-width: 420px) {
+    .header__wordmark { display: none; }
+  }
+  .header__nav { flex: 1; display: flex; justify-content: flex-end; }
+  .header__nav ul {
+    display: flex; gap: var(--s-6); list-style: none; padding: 0; margin: 0;
+  }
+  .header__nav a {
+    font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--body); text-decoration: none; padding: var(--s-2) 0;
+    border-bottom: 1px solid transparent; transition: border-color var(--duration-fast);
+  }
+  .header__nav a:hover { border-bottom-color: var(--accent); color: var(--heading); }
+  @media (max-width: 900px) {
+    .header__nav { display: none; }
+  }
+</style>

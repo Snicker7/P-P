@@ -1,0 +1,48 @@
+---
+import { getEntry } from 'astro:content';
+const settings = (await getEntry('settings', 'site')).data;
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container footer__inner">
+    <a href="/" class="footer__logo" aria-label={`${settings.siteTitle} — home`}>
+      <img src="/images/logo/paper-and-petals-logo.png" alt={settings.siteTitle} class="footer__mark" width="78" height="78" />
+    </a>
+    <div class="footer__contact">
+      {settings.inquiryPhone && <a href={`tel:${settings.inquiryPhone.replace(/[^0-9+]/g, '')}`}>{settings.inquiryPhone}</a>}
+      <a href={`mailto:${settings.inquiryEmail}`}>{settings.inquiryEmail}</a>
+    </div>
+    <nav class="footer__nav" aria-label="Footer">
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/portfolio">Portfolio</a></li>
+        <li><a href="/journal">Journal</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/inquire">Inquire</a></li>
+      </ul>
+    </nav>
+    <div class="footer__social">
+      <a href={`https://instagram.com/${settings.instagram}`} aria-label="Instagram" target="_blank" rel="noopener">Instagram</a>
+      {settings.pinterest && <a href={`https://pinterest.com/${settings.pinterest}`} aria-label="Pinterest" target="_blank" rel="noopener">Pinterest</a>}
+      {settings.tiktok && <a href={`https://tiktok.com/@${settings.tiktok}`} aria-label="TikTok" target="_blank" rel="noopener">TikTok</a>}
+    </div>
+    <p class="footer__copy">© {year} Paper &amp; Petals, LLC · {settings.serviceArea}</p>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--bg-soft); color: var(--body); padding: var(--s-9) 0 var(--s-7); margin-top: var(--s-9); border-top: 1px solid var(--heading-soft); }
+  .footer__inner { display: flex; flex-direction: column; align-items: center; gap: var(--s-5); text-align: center; }
+  .footer__logo { text-decoration: none; display: inline-flex; }
+  .footer__mark { height: 96px; width: auto; display: block; }
+  .footer__contact { display: flex; flex-direction: column; gap: var(--s-2); align-items: center; font-size: 0.95rem; }
+  .footer__contact a { color: var(--heading); text-decoration: none; letter-spacing: 0.04em; }
+  .footer__contact a:hover { color: var(--accent); }
+  .footer__nav ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--s-5); justify-content: center; }
+  .footer__nav a { color: var(--heading); text-decoration: none; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; }
+  .footer__nav a:hover { color: var(--accent); }
+  .footer__social { display: flex; gap: var(--s-4); }
+  .footer__social a { color: var(--accent); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.1em; }
+  .footer__social a:hover { color: var(--heading); }
+  .footer__copy { font-size: 0.75rem; color: rgba(43, 37, 32, 0.55); }
+</style>

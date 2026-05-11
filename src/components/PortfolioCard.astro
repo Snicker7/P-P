@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import { formatDate } from '~/lib/format';
+export interface Props {
+  href: string;
+  eventTitle: string;
+  eventDate: Date;
+  venue?: string;
+  location?: string;
+  heroImage: ImageMetadata;
+  heroImageAlt: string;
+}
+const { href, eventTitle, eventDate, venue, location, heroImage, heroImageAlt } = Astro.props;
+const sub = [venue, location].filter(Boolean).join(' · ');
+---
+<a href={href} class="card">
+  <div class="card__img">
+    <Image src={heroImage} alt={heroImageAlt} widths={[400, 800, 1200]} sizes="(max-width: 720px) 100vw, 33vw" />
+  </div>
+  <div class="card__body">
+    <p class="card__date">{formatDate(eventDate)}</p>
+    <h3 class="card__name">{eventTitle}</h3>
+    {sub && <p class="card__venue">{sub}</p>}
+  </div>
+</a>
+
+<style>
+  .card { display: block; text-decoration: none; color: var(--body); }
+  .card__img { aspect-ratio: 4/5; overflow: hidden; }
+  .card__img img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--duration) var(--ease-out); }
+  .card:hover .card__img img { transform: scale(1.03); }
+  .card__date { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin: var(--s-3) 0 var(--s-1); }
+  .card__name { font-family: var(--font-display); font-size: 1.4rem; margin: 0 0 var(--s-1); letter-spacing: 0.02em; }
+  .card__venue { font-size: 0.85rem; color: var(--body); margin: 0; }
+</style>

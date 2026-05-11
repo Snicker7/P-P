@@ -1,0 +1,39 @@
+---
+import { absoluteUrl, getMeta } from '~/lib/seo';
+import { getEntry } from 'astro:content';
+
+export interface Props {
+  pageTitle: string;
+  pageDescription?: string;
+  seoTitleOverride?: string;
+  seoDescriptionOverride?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  pathname: string;
+}
+const { pageTitle, pageDescription, seoTitleOverride, seoDescriptionOverride, ogImage, ogType = 'website', pathname } = Astro.props;
+const settings = (await getEntry('settings', 'site')).data;
+const baseUrl = Astro.site!.toString().replace(/\/$/, '');
+const canonical = absoluteUrl(baseUrl, pathname);
+const meta = getMeta({
+  pageTitle, pageDescription, seoTitleOverride, seoDescriptionOverride,
+  siteTitle: settings.siteTitle, siteDescription: settings.seoDescription,
+});
+const finalOg = ogImage ? absoluteUrl(baseUrl, ogImage) : absoluteUrl(baseUrl, settings.defaultOgImage);
+---
+<title>{meta.title}</title>
+<meta name="description" content={meta.description} />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={meta.title} />
+<meta property="og:description" content={meta.description} />
+<meta property="og:image" content={finalOg} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:site_name" content={settings.siteTitle} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={meta.title} />
+<meta name="twitter:description" content={meta.description} />
+<meta name="twitter:image" content={finalOg} />

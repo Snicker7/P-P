@@ -1,0 +1,41 @@
+---
+---
+<button class="mm__toggle" aria-label="Open menu" aria-expanded="false" data-mm-toggle>
+  <span></span><span></span><span></span>
+</button>
+<div class="mm__panel" data-mm-panel hidden>
+  <nav aria-label="Mobile">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/inquire">Inquire</a></li>
+      <li><a href="/portfolio">Portfolio</a></li>
+      <li><a href="/journal">Journal</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
+</div>
+
+<style>
+  .mm__toggle { display: none; background: none; border: none; cursor: pointer; padding: var(--s-2); }
+  .mm__toggle span { display: block; width: 26px; height: 2px; background: var(--heading); margin: 5px 0; transition: transform var(--duration-fast); }
+  .mm__toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .mm__toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .mm__toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mm__panel { position: fixed; inset: 60px 0 0; background: var(--bg); padding: var(--s-7); z-index: 40; }
+  .mm__panel ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--s-5); }
+  .mm__panel a { font-size: 1.5rem; color: var(--heading); text-decoration: none; }
+  .mm__cta { display: inline-block; background: var(--accent); padding: var(--s-3) var(--s-5); border-radius: 2px; }
+  @media (max-width: 900px) { .mm__toggle { display: block; } }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-mm-toggle]');
+  const panel = document.querySelector<HTMLDivElement>('[data-mm-panel]');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    if (open) panel?.setAttribute('hidden', ''); else panel?.removeAttribute('hidden');
+    document.body.style.overflow = open ? '' : 'hidden';
+  });
+</script>

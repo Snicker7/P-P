@@ -1,0 +1,75 @@
+---
+import Base from '~/layouts/Base.astro';
+import JsonLd from '~/components/JsonLd.astro';
+import { breadcrumb } from '~/lib/jsonld';
+import { formatDate } from '~/lib/format';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('portfolio', e => e.data.published);
+  return entries.map(e => ({ params: { slug: e.slug }, props: { entry: e } }));
+}
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const baseUrl = Astro.site!.toString().replace(/\/$/, '');
+const url = `${baseUrl}/portfolio/${entry.slug}`;
+const sub = [entry.data.venue, entry.data.location].filter(Boolean).join(' · ');
+---
+<Base
+  pageTitle={`${entry.data.eventTitle}${entry.data.venue ? ` at ${entry.data.venue}` : ''}`}
+  pageDescription={`${entry.data.eventType} florals — ${entry.data.eventTitle}${sub ? `, ${sub}` : ''}.`}
+  seoTitleOverride={entry.data.seoTitle}
+  seoDescriptionOverride={entry.data.seoDescription}
+  ogType="article"
+  ogImage={entry.data.heroImage.src}
+>
+  <article>
+    <div class="hero">
+      <Image src={entry.data.heroImage} alt={entry.data.heroImageAlt} widths={[800, 1600, 2400]} sizes="100vw" />
+    </div>
+    <div class="container section">
+      <p class="eyebrow">{formatDate(entry.data.eventDate)}{sub ? ` · ${sub}` : ''}</p>
+      <h1>{entry.data.eventTitle}</h1>
+      <div class="story"><Content /></div>
+      {entry.data.gallery.length > 0 && (
+        <div class="gallery">
+          {entry.data.gallery.map(g => (
+            <figure>
+              <Image src={g.image} alt={g.alt} widths={[600, 1200]} sizes="(max-width: 720px) 100vw, 50vw" />
+              {g.caption && <figcaption>{g.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      )}
+      {entry.data.credits.length > 0 && (
+        <section class="credits">
+          <h2>Credits</h2>
+          <ul>
+            {entry.data.credits.map(v => (
+              <li>
+                <strong>{v.role}:</strong>
+                {v.instagram ? <a href={v.instagram} target="_blank" rel="noopener">{v.name}</a> : v.name}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  </article>
+  <JsonLd data={breadcrumb([
+    { name: 'Home', url: baseUrl },
+    { name: 'Portfolio', url: `${baseUrl}/portfolio` },
+    { name: entry.data.eventTitle, url },
+  ])} />
+</Base>
+
+<style>
+  .hero img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+  .story { max-width: var(--content-w); font-size: 1.05rem; line-height: 1.8; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-4); margin-top: var(--s-7); }
+  @media (max-width: 720px) { .gallery { grid-template-columns: 1fr; } }
+  .gallery figcaption { font-size: 0.78rem; color: var(--body); padding: var(--s-2) 0; }
+  .credits { margin-top: var(--s-7); }
+  .credits ul { padding-left: var(--s-5); }
+</style>

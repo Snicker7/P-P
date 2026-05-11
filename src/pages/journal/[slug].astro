@@ -1,0 +1,50 @@
+---
+import Base from '~/layouts/Base.astro';
+import JsonLd from '~/components/JsonLd.astro';
+import { article, breadcrumb } from '~/lib/jsonld';
+import { formatDate } from '~/lib/format';
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('journal', e => e.data.published);
+  return posts.map(p => ({ params: { slug: p.slug }, props: { post: p } }));
+}
+const { post } = Astro.props;
+const { Content } = await post.render();
+const settings = (await getEntry('settings', 'site')).data;
+const baseUrl = Astro.site!.toString().replace(/\/$/, '');
+const url = `${baseUrl}/journal/${post.slug}`;
+const heroImage = typeof post.data.heroImage === 'string' ? post.data.heroImage : post.data.heroImage.src;
+---
+<Base
+  pageTitle={post.data.title}
+  pageDescription={post.data.excerpt}
+  seoTitleOverride={post.data.seoTitle}
+  seoDescriptionOverride={post.data.seoDescription}
+  ogImage={heroImage}
+  ogType="article"
+>
+  <article class="container section post">
+    <p class="eyebrow">{formatDate(post.data.date)}</p>
+    <h1>{post.data.title}</h1>
+    <img class="post__hero" src={heroImage} alt={post.data.heroImageAlt} />
+    <div class="post__body"><Content /></div>
+  </article>
+  <JsonLd data={[
+    article({ title: post.data.title, date: post.data.date, url, image: `${baseUrl}${heroImage}`, excerpt: post.data.excerpt }, settings),
+    breadcrumb([
+      { name: 'Home', url: baseUrl },
+      { name: 'Journal', url: `${baseUrl}/journal` },
+      { name: post.data.title, url },
+    ]),
+  ]} />
+</Base>
+
+<style>
+  .post { max-width: var(--content-w); }
+  .post__hero { aspect-ratio: 3/2; object-fit: cover; width: 100%; margin: var(--s-5) 0; }
+  .post__body :global(p) { font-size: 1.05rem; line-height: 1.8; }
+  .post__body :global(h2) { margin-top: var(--s-7); }
+  .post__body :global(table) { width: 100%; border-collapse: collapse; margin: var(--s-5) 0; }
+  .post__body :global(th), .post__body :global(td) { padding: var(--s-3); border-bottom: 1px solid var(--heading-soft); text-align: left; }
+</style>

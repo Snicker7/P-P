@@ -1,0 +1,124 @@
+---
+---
+<form name="inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/inquire/thanks">
+  <input type="hidden" name="form-name" value="inquiry" />
+  <p class="hp">
+    <label>Don't fill this out: <input name="bot-field" /></label>
+  </p>
+
+  <div class="grid">
+    <label>
+      <span>Partner 1 name</span>
+      <input type="text" name="partner1" required autocomplete="name" />
+    </label>
+    <label>
+      <span>Partner 2 name (optional)</span>
+      <input type="text" name="partner2" autocomplete="name" />
+    </label>
+  </div>
+
+  <div class="grid">
+    <label>
+      <span>Email</span>
+      <input type="email" name="email" required autocomplete="email" />
+    </label>
+    <label>
+      <span>Phone (optional)</span>
+      <input type="tel" name="phone" autocomplete="tel" />
+    </label>
+  </div>
+
+  <div class="grid">
+    <label>
+      <span>Event type</span>
+      <select name="eventType" required>
+        <option value="">Select one…</option>
+        <option>Wedding</option>
+        <option>Corporate event</option>
+        <option>Baby shower</option>
+        <option>Birthday party</option>
+        <option>Other event</option>
+      </select>
+    </label>
+    <label>
+      <span>Event date</span>
+      <input type="date" name="date" />
+    </label>
+  </div>
+
+  <label>
+    <span>Venue (optional)</span>
+    <input type="text" name="venue" />
+  </label>
+
+  <div class="grid">
+    <label>
+      <span>Color palette / theme</span>
+      <input type="text" name="palette" placeholder="e.g. blush, ivory, sage" />
+    </label>
+    <label>
+      <span>Floral budget</span>
+      <input type="text" name="budget" placeholder="e.g. $3,000–$5,000" />
+    </label>
+  </div>
+
+  <fieldset class="checks">
+    <legend>What florals do you need? (select any)</legend>
+    <label class="check"><input type="checkbox" name="scope" value="Bridal bouquet" /><span>Bridal bouquet</span></label>
+    <label class="check"><input type="checkbox" name="scope" value="Groom / partner wearable" /><span>Groom / partner wearable</span></label>
+    <label class="check"><input type="checkbox" name="scope" value="Wedding party" /><span>Wedding party</span></label>
+    <label class="check"><input type="checkbox" name="scope" value="Family florals" /><span>Family florals</span></label>
+    <label class="check"><input type="checkbox" name="scope" value="Ceremony arch / backdrop" /><span>Ceremony arch / backdrop</span></label>
+    <label class="check"><input type="checkbox" name="scope" value="Table centerpieces" /><span>Table centerpieces</span></label>
+    <label class="check"><input type="checkbox" name="scope" value="Large-scale installation" /><span>Large-scale installation</span></label>
+    <label class="check"><input type="checkbox" name="scope" value="Other" /><span>Other</span></label>
+  </fieldset>
+
+  <label>
+    <span>Pinterest board or inspiration link (optional)</span>
+    <input type="url" name="pinterest" placeholder="https://..." />
+  </label>
+
+  <label>
+    <span>How did you find Paper &amp; Petals?</span>
+    <select name="source">
+      <option value="">Select one…</option>
+      <option>Instagram</option>
+      <option>Pinterest</option>
+      <option>Google</option>
+      <option>Referral</option>
+      <option>Venue recommendation</option>
+      <option>Utah Valley Bride</option>
+      <option>Other</option>
+    </select>
+  </label>
+
+  <label>
+    <span>Tell me anything else about your day</span>
+    <textarea name="message" rows="5"></textarea>
+  </label>
+
+  <button type="submit" class="btn">Send inquiry</button>
+</form>
+
+<style>
+  form { max-width: 720px; display: flex; flex-direction: column; gap: var(--s-4); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+  label { display: flex; flex-direction: column; gap: var(--s-2); font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--heading); }
+  input, select, textarea {
+    font-family: var(--font-body); font-size: 1rem; padding: var(--s-3) var(--s-4);
+    border: 1px solid var(--heading-soft); background: var(--bg-soft);
+    border-radius: 2px; color: var(--body);
+  }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+  textarea { resize: vertical; }
+  .hp { position: absolute; left: -9999px; }
+  button { align-self: flex-start; margin-top: var(--s-3); }
+
+  .checks { border: 1px solid var(--heading-soft); padding: var(--s-4) var(--s-5); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3) var(--s-5); }
+  .checks legend { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--heading); padding: 0 var(--s-2); }
+  .check { display: flex; flex-direction: row; align-items: center; gap: var(--s-3); font-size: 0.95rem; letter-spacing: 0; text-transform: none; color: var(--body); }
+  .check input { width: 1rem; height: 1rem; padding: 0; }
+  @media (max-width: 480px) { .checks { grid-template-columns: 1fr; } }
+</style>
