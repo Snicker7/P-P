@@ -15,7 +15,7 @@ const posts = (await getCollection('journal', e => e.data.published))
           href={`/journal/${p.slug}`}
           title={p.data.title} date={p.data.date}
           excerpt={p.data.excerpt}
-          heroImage={typeof p.data.heroImage === 'string' ? p.data.heroImage : p.data.heroImage.src}
+          heroImage={p.data.heroImage}
           heroImageAlt={p.data.heroImageAlt}
         />
       ))}

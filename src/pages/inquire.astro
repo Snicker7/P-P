@@ -1,7 +1,10 @@
 ---
 import Base from '~/layouts/Base.astro';
 import InquiryForm from '~/components/InquiryForm.astro';
+import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
+import ill1 from '~/assets/inquire/ill-1.jpg';
+import ill2 from '~/assets/inquire/ill-2.jpg';
 const page = await getEntry('pages', 'inquire');
 ---
 <Base
@@ -11,7 +14,7 @@ const page = await getEntry('pages', 'inquire');
 >
   <section class="container section inq-section inq-section--wedding">
     <div class="inq-section__head">
-      <img src="/images/inquire/ill-1.jpg" alt="" class="inq-section__ill" loading="lazy" />
+      <Image src={ill1} alt="" class="inq-section__ill" widths={[90, 180]} sizes="90px" loading="lazy" />
       <div>
         <p class="eyebrow">Inquire</p>
         <h1>{page.data.title}</h1>
@@ -23,7 +26,7 @@ const page = await getEntry('pages', 'inquire');
 
   <section class="container section inq-section inq-section--event">
     <div class="inq-section__head">
-      <img src="/images/inquire/ill-2.jpg" alt="" class="inq-section__ill" loading="lazy" />
+      <Image src={ill2} alt="" class="inq-section__ill" widths={[90, 180]} sizes="90px" loading="lazy" />
       <div>
         <p class="eyebrow">Event Consultation</p>
         <h2>Hosting something other than a wedding?</h2>

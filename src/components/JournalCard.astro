@@ -1,18 +1,31 @@
 ---
+import { Image } from 'astro:assets';
 import { formatDate } from '~/lib/format';
 export interface Props {
   href: string;
   title: string;
   date: Date;
   excerpt: string;
-  heroImage: string;
+  heroImage: ImageMetadata | string;
   heroImageAlt: string;
 }
 const { href, title, date, excerpt, heroImage, heroImageAlt } = Astro.props;
+const isImageMeta = typeof heroImage !== 'string';
 ---
 <article class="jcard">
   <a href={href}>
-    <img class="jcard__img" src={heroImage} alt={heroImageAlt} loading="lazy" />
+    {isImageMeta ? (
+      <Image
+        class="jcard__img"
+        src={heroImage as ImageMetadata}
+        alt={heroImageAlt}
+        widths={[400, 600, 900]}
+        sizes="(max-width: 900px) 100vw, 33vw"
+        loading="lazy"
+      />
+    ) : (
+      <img class="jcard__img" src={heroImage as string} alt={heroImageAlt} loading="lazy" />
+    )}
     <p class="jcard__date">{formatDate(date)}</p>
     <h3 class="jcard__title">{title}</h3>
     <p class="jcard__excerpt">{excerpt}</p>
@@ -22,7 +35,7 @@ const { href, title, date, excerpt, heroImage, heroImageAlt } = Astro.props;
 
 <style>
   .jcard a { text-decoration: none; color: var(--body); display: block; }
-  .jcard__img { aspect-ratio: 3/2; width: 100%; object-fit: cover; }
+  .jcard__img { aspect-ratio: 3/2; width: 100%; height: auto; object-fit: cover; }
   .jcard__date { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin: var(--s-3) 0 var(--s-1); }
   .jcard__title { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 var(--s-2); text-transform: uppercase; }
   .jcard__excerpt { font-size: 0.9rem; color: var(--body); margin: 0 0 var(--s-3); }

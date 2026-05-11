@@ -3,6 +3,7 @@ import Base from '~/layouts/Base.astro';
 import JsonLd from '~/components/JsonLd.astro';
 import { article, breadcrumb } from '~/lib/jsonld';
 import { formatDate } from '~/lib/format';
+import { Image } from 'astro:assets';
 import { getCollection, getEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -14,24 +15,39 @@ const { Content } = await post.render();
 const settings = (await getEntry('settings', 'site')).data;
 const baseUrl = Astro.site!.toString().replace(/\/$/, '');
 const url = `${baseUrl}/journal/${post.slug}`;
-const heroImage = typeof post.data.heroImage === 'string' ? post.data.heroImage : post.data.heroImage.src;
+const heroIsMeta = typeof post.data.heroImage !== 'string';
+const heroImageSrc = heroIsMeta
+  ? (post.data.heroImage as ImageMetadata).src
+  : (post.data.heroImage as string);
 ---
 <Base
   pageTitle={post.data.title}
   pageDescription={post.data.excerpt}
   seoTitleOverride={post.data.seoTitle}
   seoDescriptionOverride={post.data.seoDescription}
-  ogImage={heroImage}
+  ogImage={heroImageSrc}
   ogType="article"
 >
   <article class="container section post">
     <p class="eyebrow">{formatDate(post.data.date)}</p>
     <h1>{post.data.title}</h1>
-    <img class="post__hero" src={heroImage} alt={post.data.heroImageAlt} />
+    {heroIsMeta ? (
+      <Image
+        class="post__hero"
+        src={post.data.heroImage as ImageMetadata}
+        alt={post.data.heroImageAlt}
+        widths={[600, 900, 1200]}
+        sizes="(max-width: 720px) 100vw, 720px"
+        loading="eager"
+        fetchpriority="high"
+      />
+    ) : (
+      <img class="post__hero" src={heroImageSrc} alt={post.data.heroImageAlt} />
+    )}
     <div class="post__body"><Content /></div>
   </article>
   <JsonLd data={[
-    article({ title: post.data.title, date: post.data.date, url, image: `${baseUrl}${heroImage}`, excerpt: post.data.excerpt }, settings),
+    article({ title: post.data.title, date: post.data.date, url, image: `${baseUrl}${heroImageSrc}`, excerpt: post.data.excerpt }, settings),
     breadcrumb([
       { name: 'Home', url: baseUrl },
       { name: 'Journal', url: `${baseUrl}/journal` },

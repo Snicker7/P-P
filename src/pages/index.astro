@@ -2,7 +2,15 @@
 import Base from '~/layouts/Base.astro';
 import PortfolioCard from '~/components/PortfolioCard.astro';
 import JournalCard from '~/components/JournalCard.astro';
+import { Image } from 'astro:assets';
 import { getEntry, getCollection } from 'astro:content';
+import heroImg from '~/assets/home/hero.jpg';
+import ownerImg from '~/assets/home/owner-taleah.jpg';
+import glimpse1 from '~/assets/home/glimpse-1.jpg';
+import glimpse2 from '~/assets/home/glimpse-2.jpg';
+import glimpse3 from '~/assets/home/glimpse-3.jpg';
+import utahValleyBride from '~/assets/partners/utah-valley-bride.png';
+import theRanchesVenue from '~/assets/partners/the-ranches-venue.webp';
 const home = await getEntry('pages', 'home');
 const featured = (await getCollection('portfolio', e => e.data.published && e.data.featured))
   .sort((a, b) => b.data.eventDate.getTime() - a.data.eventDate.getTime())
@@ -17,7 +25,15 @@ const posts = (await getCollection('journal', e => e.data.published))
   seoTitleOverride={home.data.seoTitle}
 >
   <section class="hero">
-    <img class="hero__image" src="/images/home/hero.jpg" alt="Paper & Petals floral installation" />
+    <Image
+      class="hero__image"
+      src={heroImg}
+      alt="Paper & Petals floral installation"
+      widths={[800, 1200, 1600, 2000]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
     <div class="hero__overlay"></div>
     <div class="container hero__content">
       <p class="eyebrow eyebrow--light">{home.data.heroEyebrow}</p>
@@ -47,7 +63,13 @@ const posts = (await getCollection('journal', e => e.data.published))
   <section class="owner">
     <div class="container owner__inner">
       <div class="owner__photo">
-        <img src="/images/home/owner-taleah.jpg" alt="TaLeah, owner and floral designer at Paper & Petals" loading="lazy" />
+        <Image
+          src={ownerImg}
+          alt="TaLeah, owner and floral designer at Paper & Petals"
+          widths={[400, 600, 900]}
+          sizes="(max-width: 720px) 100vw, 40vw"
+          loading="lazy"
+        />
       </div>
       <div class="owner__text">
         <p class="eyebrow">Meet the owner</p>
@@ -86,13 +108,13 @@ const posts = (await getCollection('journal', e => e.data.published))
         <h2>{home.data.portfolioHeadline}</h2>
         <div class="glimpse">
           <a href="/portfolio" class="glimpse__item glimpse__item--tall">
-            <img src="/images/home/glimpse-1.jpg" alt="Bridal bouquet by Paper & Petals" loading="lazy" />
+            <Image src={glimpse1} alt="Bridal bouquet by Paper & Petals" widths={[400, 600, 900]} sizes="(max-width: 720px) 100vw, 40vw" loading="lazy" />
           </a>
           <a href="/portfolio" class="glimpse__item">
-            <img src="/images/home/glimpse-2.jpg" alt="Wedding floral arrangement by Paper & Petals" loading="lazy" />
+            <Image src={glimpse2} alt="Wedding floral arrangement by Paper & Petals" widths={[300, 500, 700]} sizes="(max-width: 720px) 100vw, 30vw" loading="lazy" />
           </a>
           <a href="/portfolio" class="glimpse__item">
-            <img src="/images/home/glimpse-3.jpg" alt="Event florals by Paper & Petals" loading="lazy" />
+            <Image src={glimpse3} alt="Event florals by Paper & Petals" widths={[300, 500, 700]} sizes="(max-width: 720px) 100vw, 30vw" loading="lazy" />
           </a>
         </div>
         <p class="center"><a href="/portfolio" class="btn btn--ghost">See full portfolio</a></p>
@@ -115,13 +137,13 @@ const posts = (await getCollection('journal', e => e.data.published))
       <p class="eyebrow eyebrow--light center">Featured In &amp; Trusted By</p>
       <div class="featured-in__row">
         <a href="https://utahvalleybride.com/paper-petals/" target="_blank" rel="noopener" class="featured-in__link">
-          <img src="/images/partners/utah-valley-bride.png" alt="Utah Valley Bride 2026 Preferred Vendor" loading="lazy" class="featured-in__badge" />
+          <Image src={utahValleyBride} alt="Utah Valley Bride 2026 Preferred Vendor" widths={[200, 300]} sizes="140px" loading="lazy" class="featured-in__badge" />
         </a>
         <a href="https://theranchesvenue.com/" target="_blank" rel="noopener" class="featured-in__link">
-          <img src="/images/partners/the-ranches-venue.webp" alt="The Ranches Venue" loading="lazy" class="featured-in__venue" />
+          <Image src={theRanchesVenue} alt="The Ranches Venue" widths={[200, 300]} sizes="96px" loading="lazy" class="featured-in__venue" />
         </a>
         <a href="https://www.strollmag.com/locations/river-bottoms-ut/" target="_blank" rel="noopener" class="featured-in__link" aria-label="Featured in Stroll Magazine, River Bottoms UT">
-          <img src="/images/partners/stroll-mag.svg" alt="Stroll Magazine" loading="lazy" class="featured-in__stroll" />
+          <img src="/images/partners/stroll-mag.svg" alt="Stroll Magazine" loading="lazy" class="featured-in__stroll" width="200" height="80" />
         </a>
       </div>
     </div>
@@ -137,7 +159,7 @@ const posts = (await getCollection('journal', e => e.data.published))
             href={`/journal/${p.slug}`}
             title={p.data.title} date={p.data.date}
             excerpt={p.data.excerpt}
-            heroImage={typeof p.data.heroImage === 'string' ? p.data.heroImage : p.data.heroImage.src}
+            heroImage={p.data.heroImage}
             heroImageAlt={p.data.heroImageAlt}
           />
         ))}

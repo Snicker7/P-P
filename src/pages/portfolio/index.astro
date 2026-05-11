@@ -1,15 +1,22 @@
 ---
 import Base from '~/layouts/Base.astro';
 import PortfolioCard from '~/components/PortfolioCard.astro';
+import { Image } from 'astro:assets';
 import { getCollection, getEntry } from 'astro:content';
 const entries = (await getCollection('portfolio', e => e.data.published))
   .sort((a, b) => b.data.eventDate.getTime() - a.data.eventDate.getTime());
 const settings = (await getEntry('settings', 'site')).data;
 
-const galleryImages = [
-  'p1.jpg', 'p2.jpg', 'p3.jpg', 'p4.jpg', 'p5.jpg', 'p6.jpg', 'p7.jpg',
-  'p8.jpg', 'p9.jpg', 'p10.jpg', 'p11.jpg', 'p12.jpg', 'p13.jpg',
-];
+const galleryModules = import.meta.glob<{ default: ImageMetadata }>(
+  '~/assets/portfolio-gallery/*.jpg',
+  { eager: true }
+);
+const galleryImages = Object.entries(galleryModules)
+  .map(([path, mod]) => ({
+    src: mod.default,
+    n: parseInt(path.match(/p(\d+)\.jpg$/)?.[1] ?? '0', 10),
+  }))
+  .sort((a, b) => a.n - b.n);
 ---
 <Base pageTitle="Portfolio" pageDescription="Selected florals for weddings and events.">
   <section class="container section">
@@ -37,9 +44,15 @@ const galleryImages = [
   ) : (
     <section class="container">
       <div class="masonry">
-        {galleryImages.map((src, i) => (
+        {galleryImages.map(({ src, n }, i) => (
           <figure class="masonry__item">
-            <img src={`/images/portfolio-gallery/${src}`} alt={`Floral design by Paper & Petals — ${i + 1}`} loading="lazy" />
+            <Image
+              src={src}
+              alt={`Floral design by Paper & Petals — ${n}`}
+              widths={[400, 600, 900]}
+              sizes="(max-width: 480px) 100vw, (max-width: 900px) 50vw, 33vw"
+              loading={i < 3 ? 'eager' : 'lazy'}
+            />
           </figure>
         ))}
       </div>

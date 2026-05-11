@@ -1,12 +1,14 @@
 ---
 import MobileMenu from './MobileMenu.astro';
+import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
+import logo from '~/assets/logo/paper-and-petals-logo.png';
 const settings = (await getEntry('settings', 'site')).data;
 ---
 <header class="header">
   <div class="container header__inner">
     <a href="/" class="header__logo" aria-label={`${settings.siteTitle} — home`}>
-      <img src="/images/logo/paper-and-petals-logo.png" alt="" class="header__mark" width="74" height="74" />
+      <Image src={logo} alt="" class="header__mark" widths={[64, 128, 192]} sizes="64px" loading="eager" />
       <span class="header__wordmark">Paper &amp; Petals</span>
     </a>
     <nav class="header__nav" aria-label="Primary">
